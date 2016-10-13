@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8">
+        <title>RPS Game</title>
+        <style type="text/css">
+        	body { 
+        		padding: 20px; 
+        		background-color: #ccc;
+        		font-family: arial;
+        	}
+        	#wrapper {
+        		width: 100%;
+        	}
+        	#gameArea {
+        		padding: 10px;
+        		text-align: center;
+        		width: 80%;
+        		margin: auto;
+        		background-color: #fafafa;
+        		border-radius: 5px;
+        	}
+        	#gameAreaLeft {
+        		width: 70%; 
+        		float: left;
+        	}
+        	#gameAreaRight {
+        		width: 30%; 
+        		float: right;
+        	}
+        	#gameIcons img {
+        		cursor: pointer;
+        	}
+        	#gameIcons img:hover, #userChoice, .userChoice {
+        		background-color: teal;
+        		border-radius: 50%;
+        	}
+        	#computerChoice, .computerChoice {
+        		background-color: orange;
+        		border-radius: 50%;
+        	}
+        	#gameHistory img {
+        		width: 100px;
+        	}
+        </style>
+        
+        <script src="jquery-3.1.1.slim.js"></script>
+			
+	    <script>
+	    	// global variables
+	    	var computerScore = 0;
+	    	var userScore = 0;
+	    	
+			var gameHistory = []; // array
+			
+		    function rpsGame(userChoice) {
+		    	var randomNumber = Math.floor(Math.random() * 4); // get a number between 0 and 3
+		    	var computerChoices = ['rock','paper','scissors','fire']; // possible choices for computer
+		    	var computerChoice = computerChoices[randomNumber]; // use the random number select to pick a choice for the computer
+
+		    	// the following creates an array of the current choices and adds that to a global 
+		    	// array that tracks choices for each round played
+		    	//gameHistory.push([computerChoice, userChoice]);
+
+				var results = '';
+				var winner = 0;
+				results = 'Computer selected<br /><img src="' + computerChoice + '.png" id="computerChoice" /><br />';
+
+				if (userChoice == computerChoice) {
+				winner = 2;
+                results += "It was a tie!<br />";
+}
+//I choose rock and computer chooses paper, I will lose!
+				else	
+				if (userChoice == 'rock') {				
+                if (computerChoice == 'paper')  {
+				computerScore++;
+                                results += "Computer wins with " + computerChoice + "!<br />";
+                }
+                else { winner = 1;
+				userScore++;
+                                results += "You win with " + userChoice + "!<br />";
+                }
+}
+// if I choose paper and computer chooses scissors OR fire I will lose
+				else	
+				if (userChoice == 'paper') {                
+                if (computerChoice == 'scissors' || computerChoice == 'fire')  {
+				computerScore++;
+                                results += "Computer wins with " + computerChoice + "!<br />";
+				
+                }
+                else { winner = 1;
+				userScore++;
+                                results += "You win with " + userChoice + "!<br />";
+                }
+}
+// If I choose scissors and computer chooses rock OR fire I lose.
+				else	
+				if (userChoice == 'scissors') {
+                if (computerChoice == 'rock' || computerChoice == 'fire')  {
+				computerScore++;
+                                results += "Computer wins with " + computerChoice + "!<br />";
+                }
+                else { winner = 1;
+				userScore++;
+                                results += "You win with " + userChoice + "!<br />";
+                }
+}
+//If I choose fire and computer chooses rock, I will lose.
+				else	
+				if (userChoice == 'fire') {
+                if (computerChoice == 'rock')  {
+				computerScore++;
+                                results += "Computer wins with " + computerChoice + "!<br />";
+                }
+                else { winner = 1;
+				userScore++;
+                                results += "You win with " + userChoice + "!<br />";
+                }
+}
+			gameHistory.push([computerChoice, userChoice, winner]);
+
+				$('#gameOutput').html(results);
+				
+				endGame(); // call function to update score and history
+		    }
+		    
+		    function endGame() {
+		    	// update score
+				$('#userScore').html(userScore);
+				$('#computerScore').html(computerScore);
+		    	//console.log(userScore, computerScore);
+		    	/* 
+		    	Uncomment the following line to see what gameHistory looks like.  Use your
+		    	browser console to see the results.
+		    	*/
+		    	 console.log(gameHistory); 
+		    	
+		    	// update game history
+		    	var history = '';
+		    	// need to add code here to build up what the history should be
+		    	for(i=0; i < gameHistory.length; i++)
+				{
+				
+				// if computer wins then display both icons and color just the computer icon
+				if(gameHistory[i][2] == 0)  
+					history += '<img class="computerChoice" src="'+gameHistory[i][0] + '.png">'  + '<img src="'+gameHistory[i][1] +'.png"><br>'; 
+				console.log(history);
+				
+				     // if I win , both icons will be displayed but only mine will be colored.
+					if(gameHistory[i][2] == 1)  
+					history += '<img src="'+gameHistory[i][0] + '.png">'  + '<img class="userChoice" src="'+gameHistory[i][1] +'.png"><br>';
+				
+				//if a tie occurs, both icons will be displayed and be uncolored
+				if(gameHistory[i][2] == 2)  
+					history += '<img src="'+gameHistory[i][0] + '.png">'  + '<img src="'+gameHistory[i][1] +'.png"><br>';
+				
+				}
+		    	$('#gameHistory').html(history);
+		    }
+		    
+		</script>
+    </head>
+<body>
+	<div id="wrapper">
+		<div id="gameArea">
+			<div id="gameAreaLeft">
+				<h1>Rock,Paper, Scissors</h1>
+				<hr />
+				<div id="gameIcons">
+					<h2>Make Selection</h2>
+					<img src="rock.png" onclick="rpsGame('rock');"/> 
+					<img src="paper.png" onclick="rpsGame('paper');"/> 
+					<img src="scissors.png" onclick="rpsGame('scissors');"/>
+					<img src="fire.png" onclick="rpsGame('fire');"/>
+				</div>
+				<hr />
+				<div id="gameOutput"></div>
+			</div>
+			<div id="gameAreaRight">
+				<h1>Score:</h1>
+				<h2>You <span id="userScore">0</span> / Computer <span id="computerScore">0</span></h2>
+				<hr />
+				<h3>Game History</h3>
+				<div id="gameHistory">
+				</div>
+			</div>
+			<div style="clear: both;"></div>
+    	</div>
+    </div>
+</script>
+</body>
+</html>
