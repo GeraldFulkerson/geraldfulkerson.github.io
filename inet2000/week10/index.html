@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf8">
+	<title>Blackjack</title>
+	<style type="text/css">
+		#cards img, #shuffled img { height: 50px; float: left; margin: 5px; }
+	</style>
+	     
+	<script src="jquery-3.1.1.slim.js"></script>
+	
+	<script>
+		var deck = [];
+		function getNewDeck() {
+			
+			var suits = ['clubs','spades','diamonds','hearts']; //suits
+			var face = ['ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'king', 'queen', 'jack']; //face values
+			var value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]; //numerical values
+			
+			for(i=0; i<suits.length; i++)
+			{
+				for(j=0; j<13; j++)
+				{
+					deck.push({suit: suits[i], face: face[j], value: value[j]})
+				}
+			}
+			
+			return deck;
+		}
+		
+		function shuffleDeck(deck) {
+			var newDeck = [];			
+			
+			for(i=0; i<52; i++){
+				var randomNumber = Math.floor(Math.random() * deck.length);
+				newDeck.push(deck[randomNumber]);
+				
+				deck.splice(randomNumber,1)
+			}
+			
+			return newDeck;
+		}
+		
+		function printDeck(deck) {
+			var cards = '';
+			
+			for(i=0; i<deck.length; i++)
+			{
+				cards = cards + '<img src="cards/' + deck[i].face + '_of_' + deck[i].suit + '.png">';
+				
+				if((i+1)%13==0){
+					cards = cards + '<br clear="all">';
+				}
+			}
+		
+			cards = cards + '<br clear="all">';
+			return cards;
+		}
+		
+		function game() {
+			var deck = getNewDeck();
+			$('#cards').html(printDeck(deck));
+			var deck = shuffleDeck(deck);
+			$('#shuffled').html(printDeck(deck));
+		}
+		
+		
+	</script>
+</head>
+<body>
+	<h1>Blackjack</h1>
+	<div><button onclick="game();">Show Deck</button></div>
+	<h2>New Deck</h2>
+	<div id="cards">
+	</div>
+	<h2>Sorted Deck</h2>
+	<div id="shuffled">
+	</div>
+
+</body>
+</html>
