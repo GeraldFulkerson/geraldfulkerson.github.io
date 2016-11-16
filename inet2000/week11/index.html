@@ -19,12 +19,18 @@
 	
 	<script>
 	
-		var deck, dealerCards, playerCards;
+		var deck = []; 
+		var dealerCards = [];
+		var playerCards = [];
+		var playerPoints = 0
+		var dealerPoints = 0
+
 		
 		function getNewDeck() {
+			// code from last week
 			var suits = ['clubs','spades','diamonds','hearts']; //suits
 			var face = ['ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'king', 'queen', 'jack']; //face values
-			var value = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]; //numerical values
+			var value = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]; //numerical values
 			
 			for(i=0; i<suits.length; i++)
 			{
@@ -38,6 +44,7 @@
 		}
 		
 		function shuffleDeck(deck) {
+			// code from last week
 			var newDeck = [];			
 			
 			for(i=0; i<52; i++){
@@ -45,14 +52,18 @@
 				newDeck.push(deck[randomNumber]);
 				
 				deck.splice(randomNumber,1)
-			}			
+			}
+			
 			return newDeck;
 		}
 		
 		function printCards(theCards,location) {
 			var cards = '';
 			
-			// add code here that builds a string of images that represent the cards
+			for(i=0; i<theCards.length; i++)
+			{
+				cards = cards + '<img src="cards/' + theCards[i].face + '_of_' + theCards[i].suit + '.png">';							
+			}
 			
 			$('#' + location).html(cards);
 		}
@@ -65,27 +76,79 @@
 			$('#deck').html('<p>' + winner + '</p>');
 		}
 		
-		function countCards(theHand) {
-			// find the point total of the hand.
-			// aces are counted as 11 for this week.
-		}
-		
+				
 		function stand() {
+			for(i=0; i<deck.length; i++)
+			{	
+				var card = deck.pop();			
+				dealerCards.push(card);				
+				
+				{dealerPoints = dealerPoints + card.value}
+				
+				if (dealerPoints > 16)
+					break;
+			}
+			if (dealerPoints > 21)
+			{
+			displayWinner('Player Wins!');			
+			}
+			
+			else if (dealerPoints == 21)
+			{
+			displayerWinner('Dealer Wins!')		
+			}
+			
+			else if (dealerPoints > playerPoints)
+			{
+			displayWinner('Dealer Wins!')					
+			}
+			
+			else if (playerPoints > dealerPoints)
+			{
+			displayWinner('Player Wins!')			
+			}
+			
+			else if (playerPoints == dealerPoints)
+			{
+			displayWinner('Draw')			
+			}			
+			
+			printCards(dealerCards,'dealer-cards')				
 			// if the player stands, then the dealer takes cards as long as the dealer's hand is < 17.
 			// Once hand is greater than 17, then game is over.  If the dealer is >= 17 and <= 21, then dealer wins.
 			// If dealer is > 21, then player wins.
 		}
-		
-		function hit() {
+
+		function hit() {						
+			//playerCards.push(deck.pop());					
+			
+			var playerCard = deck.pop();
+			playerCards.push(playerCard);
+			
+			playerPoints = playerPoints + playerCard.value
+			
+			printCards(playerCards,'player-cards')
+			
+			if (playerPoints == 21)
+			{
+			displayWinner('Player Wins!')
+			}
+			else if (playerPoints > 21)
+			{
+			displayWinner('Dealer Wins!')
+			}			
+			
 			// Add another card to the players hand.  If the card causes player
 			// to bust, then end game.  Player busts when total of cards is greater than 21.
-			// be sure to handle the "ACE"  the ace could be either 1 or 11
+			// be sure to handle the "ACE"  the ace is counted as 11 this assignment
 		}
 		
 		function game() {
 			// init each player
 			dealerCards = [];
 			playerCards = [];
+			playerPoints = 0;
+			dealerPoints = 0;
 			
 			// init deck
 			deck = shuffleDeck(getNewDeck());
@@ -97,8 +160,15 @@
 			printCards(dealerCards,'dealer-cards');
 
 			// deal first two cards to player
-			playerCards.push(getCard());
-			playerCards.push(getCard());
+			var playerCard = deck.pop();
+			playerCards.push(playerCard);
+			
+			playerPoints = playerPoints + playerCard.value
+			
+			playerCard = deck.pop();
+			playerCards.push(playerCard);
+			
+			playerPoints = playerPoints + playerCard.value
 			
 			// print hand
 			printCards(playerCards,'player-cards');
