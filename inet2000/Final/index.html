@@ -10,26 +10,37 @@
 		#caption { background: yellow; padding: 10px; color: #000; border-radius: 4px; position: absolute; }
 	</style>
 	<script type="text/javascript">
-		//var rooms = ['Computer Science', 'Gym', 'Library', 'Whitney Atrium', 'Choir Room'] // list of rooms that can be located
+		var rooms = [
+			{name: 'Computer Science', left:363, top:557},
+			{name: 'Gym', left:357, top:125},
+			{name: 'Library', left:283, top:435},
+			{name: 'Whitney Atrium', left:340, top:645},
+			{name: 'Choir', left:263, top:550}
+		] // list of rooms that can be located
 		
-		var rooms = {
-		name: 'Computer Science',
-		left:363, //original position (363, 557)
-		top:557,
-		};
+		
 		
 		
 		// locate room
 		function lookup(room) {
+			for(i=0; i<rooms.length; i++){
+				if(room == rooms[i].name){
+					roomIndex=i				
+				}
+			}
 			// the following gets the top left corner location of the object specified.
 			var position = $('#map').offset(); // example: position = { left: 20, top: 45 }
-			console.log(position);
-			var css = 'left: ' + (parseInt(position.left) + 182) + 'px; ' + 'top: ' + (parseInt(position.top) + 240) + 'px;'
-			
-			//var css = 'left ' + (rooms.left) + 'px; ' + 'top: ' + (rooms.top) + 'px;'
-			
+			var mapHeight = $('#map').height();
+			var mapWidth = $('#map').width();
+			var scaleX = mapWidth/914;
+			var scaleY = mapHeight/922;			
+			console.log('Dim: ' + mapHeight + ' ' + mapWidth);
+			var pinHeight = $('#pin-container').height();
+			var pinWidth = $('#pin-container').width();
+			console.log('Dim: ' + pinHeight + ' ' + pinWidth);
+			var css = 'left: ' + (parseInt(position.left) + parseInt(rooms[roomIndex].left*scaleX) - 20) + 'px; ' + 'top: ' + (parseInt(position.top) + parseInt(rooms[roomIndex].top*scaleY) - 70) + 'px;'				
 			$('#pin-container').attr('style', css);
-			$('#caption').html(rooms.name);
+			$('#caption').html(rooms[roomIndex].name);
 			$('#pin-container').show();
 			return false;
 			
@@ -58,7 +69,7 @@
 		<form action="#">
 			<label>Enter room name:</label>
 			<input type="text" name="room" id="room">
-			<button onclick="lookup($('#room').val());">Locate</button>
+			<button onclick="return lookup($('#room').val());">Locate</button>
 		</form>
 	</div>
 
